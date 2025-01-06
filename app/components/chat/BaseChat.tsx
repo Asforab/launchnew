@@ -4,9 +4,11 @@ import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '~/components/sidebar/Menu.client';
 import { IconButton } from '~/components/ui/IconButton';
 import { Workbench } from '~/components/workbench/Workbench.client';
-import { classNames } from '~/utils/classNames';
+import { cn } from '~/lib/utils';
 import { Messages } from './Messages.client';
 import { SendButton } from './SendButton.client';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { classNames } from '~/utils/classNames';
 
 import styles from './BaseChat.module.scss';
 
@@ -62,7 +64,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     return (
       <div
         ref={ref}
-        className={classNames(
+        className={cn(
           styles.BaseChat,
           'relative flex h-full w-full overflow-hidden bg-bolt-elements-background-depth-1',
         )}
@@ -72,14 +74,40 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         <div ref={scrollRef} className="flex overflow-y-auto w-full h-full">
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow min-w-[var(--chat-min-width)] h-full')}>
             {!chatStarted && (
-              <div id="intro" className="mt-[26vh] max-w-chat mx-auto">
-                <h1 className="text-5xl text-center font-bold text-bolt-elements-textPrimary mb-2">
-                  Where ideas begin
-                </h1>
-                <p className="mb-4 text-center text-bolt-elements-textSecondary">
-                  Bring ideas to life in seconds or get help on existing projects.
-                </p>
-              </div>
+              <Card id="intro" className="mt-[26vh] max-w-chat mx-auto">
+                <CardHeader>
+                  <CardTitle className="text-center">Where ideas begin</CardTitle>
+                  <p className="text-center text-bolt-elements-textSecondary">
+                    Bring ideas to life in seconds or get help on existing projects.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-10 h-10 rounded-full bg-bolt-elements-item-backgroundAccent flex items-center justify-center">
+                        <div className="i-bolt:stars text-xl text-bolt-elements-item-contentAccent" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">AI-Powered Development</p>
+                        <p className="text-sm text-bolt-elements-textSecondary">
+                          Get intelligent code suggestions and solutions
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-10 h-10 rounded-full bg-bolt-elements-item-backgroundAccent flex items-center justify-center">
+                        <div className="i-ph:code text-xl text-bolt-elements-item-contentAccent" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Live Code Environment</p>
+                        <p className="text-sm text-bolt-elements-textSecondary">
+                          Write, test, and deploy code in real-time
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
             <div
               className={classNames('pt-6 px-6', {
@@ -103,12 +131,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   'sticky bottom-0': chatStarted,
                 })}
               >
-                <div
-                  className={classNames(
-                    'shadow-sm border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] rounded-lg overflow-hidden',
-                  )}
-                >
-                  <textarea
+                <Card className="shadow-sm border border-bolt-elements-borderColor bg-bolt-elements-prompt-background backdrop-filter backdrop-blur-[8px] overflow-hidden">
+                  <CardContent>
+                    <textarea
                     ref={textareaRef}
                     className={`w-full pl-4 pt-4 pr-16 focus:outline-none resize-none text-md text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary bg-transparent`}
                     onKeyDown={(event) => {
@@ -180,7 +205,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       </div>
                     ) : null}
                   </div>
-                </div>
+                  </CardContent>
+                </Card>
                 <div className="bg-bolt-elements-background-depth-1 pb-6">{/* Ghost Element */}</div>
               </div>
             </div>

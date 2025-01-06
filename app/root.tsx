@@ -1,11 +1,12 @@
-import { useStore } from '@nanostores/react';
-import type { LinksFunction } from '@remix-run/cloudflare';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
-import { themeStore } from './lib/stores/theme';
-import { stripIndents } from './utils/stripIndent';
-import { createHead } from 'remix-island';
-import { useEffect } from 'react';
+import { useStore } from '@nanostores/react'
+import type { LinksFunction } from '@remix-run/cloudflare'
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+import tailwindReset from '@unocss/reset/tailwind-compat.css?url'
+import { ThemeProvider } from 'next-themes'
+import { themeStore } from './lib/stores/theme'
+import { stripIndents } from './utils/stripIndent'
+import { createHead } from 'remix-island'
+import { useEffect } from 'react'
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -63,19 +64,31 @@ export const Head = createHead(() => (
 ));
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const theme = useStore(themeStore);
+  const theme = useStore(themeStore)
 
   useEffect(() => {
-    document.querySelector('html')?.setAttribute('data-theme', theme);
-  }, [theme]);
+    document.querySelector('html')?.setAttribute('data-theme', theme)
+  }, [theme])
 
   return (
-    <>
-      {children}
-      <ScrollRestoration />
-      <Scripts />
-    </>
-  );
+    <ThemeProvider
+      attribute="data-theme"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+      storageKey="bolt_theme"
+      value={theme}
+      onChange={(value: string) => {
+        themeStore.set(value)
+      }}
+    >
+      <div className="min-h-screen bg-background font-sans antialiased">
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </div>
+    </ThemeProvider>
+  )
 }
 
 export default function App() {

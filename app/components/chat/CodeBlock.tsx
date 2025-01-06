@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { bundledLanguages, codeToHtml, isSpecialLang, type BundledLanguage, type SpecialLanguage } from 'shiki';
-import { classNames } from '~/utils/classNames';
+import { cn } from '~/lib/utils';
 import { createScopedLogger } from '~/utils/logger';
 
 import styles from './CodeBlock.module.scss';
@@ -49,33 +49,30 @@ export const CodeBlock = memo(
     }, [code]);
 
     return (
-      <div className={classNames('relative group text-left', className)}>
-        <div
-          className={classNames(
-            styles.CopyButtonContainer,
-            'bg-white absolute top-[10px] right-[10px] rounded-md z-10 text-lg flex items-center justify-center opacity-0 group-hover:opacity-100',
-            {
-              'rounded-l-0 opacity-100': copied,
-            },
-          )}
-        >
-          {!disableCopy && (
-            <button
-              className={classNames(
-                'flex items-center bg-transparent p-[6px] justify-center before:bg-white before:rounded-l-md before:text-gray-500 before:border-r before:border-gray-300',
-                {
-                  'before:opacity-0': !copied,
-                  'before:opacity-100': copied,
-                },
-              )}
-              title="Copy Code"
-              onClick={() => copyToClipboard()}
-            >
-              <div className="i-ph:clipboard-text-duotone"></div>
-            </button>
-          )}
-        </div>
-        <div dangerouslySetInnerHTML={{ __html: html ?? '' }}></div>
+      <div className={cn('relative group text-left rounded-lg overflow-hidden', className)}>
+        {!disableCopy && (
+          <button
+            onClick={copyToClipboard}
+            className={cn(
+              'absolute top-2 right-2 h-8 w-8 rounded-md flex items-center justify-center',
+              'bg-bolt-elements-background-depth-1/80 backdrop-blur-sm',
+              'text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
+              'opacity-0 group-hover:opacity-100 transition-opacity',
+              'focus:outline-none focus:ring-2 focus:ring-bolt-elements-borderColor',
+              { 'opacity-100': copied }
+            )}
+            title={copied ? 'Copied!' : 'Copy code'}
+          >
+            <div className={cn(
+              'text-lg transition-transform',
+              copied ? 'i-ph:check scale-110' : 'i-ph:clipboard-text-duotone'
+            )} />
+          </button>
+        )}
+        <div 
+          className="p-4 bg-bolt-elements-background-depth-2 rounded-lg"
+          dangerouslySetInnerHTML={{ __html: html ?? '' }}
+        />
       </div>
     );
   },
